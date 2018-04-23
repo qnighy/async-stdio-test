@@ -1,0 +1,8 @@
+[package]
+name = "async-stdio-test"
+version = "0.1.0"
+authors = ["Masaki Hara <ackie.h.gmai@gmail.com>"]
+
+[dependencies]
+tokio = "0.1"
+tokio-file-unix = "0.5"
