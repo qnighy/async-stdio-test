@@ -10,6 +10,10 @@ use tokio::timer;
 use tokio_file_unix::raw_stdin;
 
 fn main() {
+    tokio::run(future::lazy(main2));
+}
+
+fn main2() -> Box<Future<Item = (), Error = ()> + Send> {
     let i = Arc::new(atomic::AtomicIsize::new(0));
     let i2 = i.clone();
 
@@ -20,6 +24,8 @@ fn main() {
             Ok(())
         })
         .map_err(|e| panic!("Interval errored: {}", e));
+
+    tokio::executor::spawn(task1);
 
     let stdin = tokio_file_unix::File::new_nb(raw_stdin().unwrap()).unwrap();
     let stdin = stdin
@@ -32,5 +38,5 @@ fn main() {
         })
         .map_err(|e| panic!("Lines errored: {}", e));
 
-    tokio::run(task1.join(task2).map(|_| ()));
+    Box::new(task2)
 }
